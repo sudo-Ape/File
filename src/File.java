@@ -66,6 +66,23 @@ public class File {
         this.modificationTime = null;
     }
 
+    public void setName(String newName) {
+        if (!writable) {
+            throw new IllegalStateException("File is read-only");
+
+        }
+        if (newName == null) {
+            throw new IllegalArgumentException("File name cannot be null");
+        }
+        if (!isValidName(newName)) {
+            throw new IllegalArgumentException("File name is invalid");
+        }
+
+        this.name = newName;
+        this.modificationTime = new Date();
+    }
+
+
 
     /**
      *
