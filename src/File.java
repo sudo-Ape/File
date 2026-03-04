@@ -6,6 +6,7 @@ import java.util.Date;
  * Basic class file
  * OGP Practicum 1
  *
+ *
  * @author Casper Vermeren; Loïck Sansen; Wim Dekeyser
  * @version 1.0
  */
@@ -27,8 +28,8 @@ public class File {
      *        the name of this new file
      */
     public File(String name){
-        this.setName(name, true);
-        this.setSize(0, true);
+        this.setName(name);
+        this.setSize(0);
         this.writable = true;
         this.creationTime = new Date();
         this.modificationTime = null;
@@ -58,8 +59,8 @@ public class File {
      * @note Constructor which makes a file with certain name, certain size and state which indicates if file is writable or not.
      */
     public File(String name, int size, boolean writable)  {
-        this.setName(name, true);
-        this.setSize(size, true);
+        this.setName(name);
+        this.setSize(size);
         this.setWritable(writable);
         this.creationTime = new Date();
         this.modificationTime = null;   // A file only gets a modification time at the moment it is modified for the first time.
@@ -218,7 +219,7 @@ public class File {
         this.setSize(this.size + amount);
     }
 
-    
+
     // Mutator: shorten
     /**
      *
