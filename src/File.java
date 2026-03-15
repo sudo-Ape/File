@@ -107,25 +107,32 @@ public class File {
     /**
      * Set tbe name of the file directly
      *
-     * @post The name is set to the given name
-     *      | new.getName().equals(name)
+     * @post  If the given name is valid, the name is set to the given name
+     *      | isValidName(name) ==> new.getName().equals(name)
+     *
+     * @post If the given name is invalid, the name is set to the default name
+     *      | !isValidName(name) ==> new.getName().equals("New-File")
      *
      * @param name
      *       The new name for the file
      *
-     * @note @Raw ysed to signal that this method may be called on an object that is not yet fully initialized
+     * @note @Raw used to signal that this method may be called on an object that is not yet fully initialized
      *       (size and creationTime have not been set yet).
      */
-    @Basic @Raw
+    @Raw
     private void setName(String name){
-        this.name = name;
+        if (isValidName(name)) {
+            this.name = name;
+        } else {
+            this.name = "New-File";
+        }
     }
 
     /**
-     * Set the name of the file.
+     * Change the name of the file
      *
-     * @post The name is set to the given name
-     *      | new.getName().equals(name)
+     * @effect The name is set to the given name
+     *      | setName(name)
      *
      * @post The modification time is updated
      *      | new.getModificationTime() != null
@@ -133,25 +140,18 @@ public class File {
      * @throws IllegalStateException If the file is not writable
      *      | !isWritable()
      *
-     * @throws IllegalArgumentException If the given name is invalid
-     *      | !isValidName(name)
-     *
      * @param name
      *        The new name for the file
      *
-     * @note changeIllegalName() method was removed because we throw illegalArgumentExceptions in this method.
+     * @note Invalid names are handled by setName() which falls back to "New-File"
      */
-    public void changeName(String name) throws IllegalStateException, IllegalArgumentException {
+    public void changeName(String name) throws IllegalStateException {
         // Check if file is writable
         if (!this.isWritable()) {
             throw new IllegalStateException("File is not writable");
         }
-        // check if given character in name are legal
-        if (isValidName(name)) {
-            this.name = name;
-        } else {
-            this.name = "New-File";
-        }
+        this.setName(name);
+        this.modificationTime = new Date();
     }
 
     /**
