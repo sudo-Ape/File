@@ -4,34 +4,94 @@ import be.kuleuven.cs.som.annotate.Raw;
 import be.kuleuven.cs.som.annotate.Basic;
 import java.util.Date;
 
+/**
+ * A class representing an item with a name and writable state
+ * OOP Practicum 2
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ * @Version 1.2
+ *
+ * @invar The name of the item must always be valid
+ *      | isValidName(getName())
+ *
+ * @invar The creation time must always be valid
+ *      |isValidCreationTime(getCreationTime())
+ *
+ * @invar The modification time must always be valid
+ *      | isValidModificationTime(getModificationTime())
+ */
+
 public abstract class DiskItem {
 
 // =====================================================================
 // Fields
 // =====================================================================
 
-    private String name = null;
-    private Date creationTime = null;
-    private Date modificationTime = null;
-    private Directory parentDirectory = null;
-    private boolean writable = false;
-    private boolean isTerminated = false;
+    protected String name = null;
+    protected Date creationTime = null;
+    protected Date modificationTime = null;
+    protected Directory parentDirectory = null;
+    protected boolean writable = false;
+    protected boolean isTerminated = false;
 
 // =====================================================================
 // Constructors
 // =====================================================================
 
     /**
-     * Initialize a new disk item
+     * Initialize a new disk item with given name and writability
      *
-     * @param name name of this item
-     * @param writable Whether this item is writable
+     * @effect This item's name will be set to the given name
+     *      | setName(name)
+     *
+     * @effect This item's writability will be set to the given writability
+     *      | setWritable(writable)
+     *
+     *
+     * @param name
+     *        name of this item
+     *
+     * @param writable
+     *        Whether this item is writable
      */
     protected DiskItem(String name, boolean writable) {
-        this.setWritable(writable);
         this.setName(name);
+        this.setWritable(writable);
         this.creationTime = new Date();
         this.modificationTime = null;
+    }
+
+
+    /**
+     * Initializes a new disk item with given parent directory, name and writability
+     *
+     * @effect This item's name will be set to the given name
+     *      | setName(name)
+     *
+     * @effect This item's writability will be set to the given writability
+     *      | setWritable(writable)
+     *
+     * @param parent
+     *        The parent directory of this item
+     *
+     * @param name
+     *        The name of this item
+     *
+     * @param writable
+     *        The writability of this item
+     */
+    protected DiskItem(Directory parent, String name, boolean writable){
+
+        // initialize parrent variable
+
+        this.setName(name);
+        this.setWritable(writable);
+        this.creationTime = new Date();
+        this.modificationTime = null;
+
+        if (parent != null){
+            parent.addItem(this);
+        }
     }
 
 // ===============================
@@ -42,7 +102,7 @@ public abstract class DiskItem {
      *
      * @return the absolute path of the item;
      */
-    public abstract String getAbsolutePath() {return absolutePath};
+    public abstract String getAbsolutePath();
 
 
     /**
@@ -50,7 +110,7 @@ public abstract class DiskItem {
      *
      * @return The root of the item
      */
-    public abstract Directory getRoot() {return root};
+    public abstract Directory getRoot();
 
 
     /**
@@ -58,7 +118,7 @@ public abstract class DiskItem {
      *
      * @return the total disk usage of the item
      */
-    public abstract long getTotalDiskUsage() {return totalDiskUsage};
+    public abstract long getTotalDiskUsage();
 
 
     /**
@@ -127,6 +187,23 @@ public abstract class DiskItem {
     }
 
     /**
+     * Checks whether the name of this item is valid
+     *
+     * @param name Name of the item
+     *
+     * @return NO RETURN IN ABSTRACT METHOD SINCE IT HAS NO BODY????????
+     */
+    protected abstract boolean isValidName(String name);
+
+    /**
+     * Return the default name of the item.
+     *
+     * @return The default name of the item.
+     */
+    protected abstract String getDefaultName();
+
+
+    /**
      * Change the name of the item
      *
      * @effect The name is set to the given name
@@ -147,7 +224,11 @@ public abstract class DiskItem {
         if (!this.isWritable()) {
             throw new IllegalStateException("Item is not writable");
         }
-        this.setName(name);
+        if (isValidName(name)){
+            this.name = name;
+        } else {
+            this.name = getDefaultName();
+        }
         this.modificationTime = new Date();
     }
 
@@ -207,6 +288,25 @@ public abstract class DiskItem {
         return modificationTime;
     }
 
+
+    /**
+     * Set the creation time of the file.
+     *
+     * @post The creation time is set to the given time if valid, otherwise it is set to the current system time.
+     *      | new.getCreationTime() == (creationTime != null ? creationTime : new Date())
+     *
+     * @param creationTime
+     *      The creation time to set
+     */
+    private void setCreationTime(Date creationTime) {
+        if (creationTime != null) {
+            this.creationTime = this.getCreationTime();
+        } else {
+            this.creationTime = new Date();
+        }
+    }
+
+
     /**
      * Checks the creation time of the item
      *
@@ -265,6 +365,7 @@ public abstract class DiskItem {
 
 
 
+
 // =====================================================================
 // Directory Specific
 // =====================================================================
@@ -286,7 +387,7 @@ public abstract class DiskItem {
      *
      * @return The parent directory of the item.
      */
-    public Directory getParentDirectory {return parentDirectory;}
+    public Directory getParentDirectory() {return parentDirectory;}
 
 
     /**
@@ -299,7 +400,5 @@ public abstract class DiskItem {
     public Directory isDirectOrIndirectChildOf(Directory directory){
 
     }
-
-
 
 }
