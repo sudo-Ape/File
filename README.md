@@ -1,5 +1,5 @@
 ## **Import**
-[] Download KU Leuven packages\
+[] Download KU Leuven packages
 
 ## **DiskItem**
 [] setParentDirectory() method --> check if everything is made properly\
