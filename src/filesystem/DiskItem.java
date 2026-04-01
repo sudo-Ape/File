@@ -33,36 +33,12 @@ public abstract class DiskItem {
     protected Date modificationTime = null;
     protected Directory parentDirectory = null;
     protected boolean writable = false;
-    protected boolean isTerminated = false;
+    protected boolean terminated = false;
 
 
 // =====================================================================
 // Constructors
 // =====================================================================
-
-    /**
-     * Initialize a new disk item with given name and writability
-     *
-     * @effect This item's name will be set to the given name
-     *      | setName(name)
-     *
-     * @effect This item's writability will be set to the given writability
-     *      | setWritable(writable)
-     *
-     *
-     * @param name
-     *        name of this item
-     *
-     * @param writable
-     *        Whether this item is writable
-     */
-    protected DiskItem(String name, boolean writable) {
-        this.setName(name);
-        this.setWritable(writable);
-        this.creationTime = new Date();
-        this.modificationTime = null;
-    }
-
 
     /**
      * Initializes a new disk item with given parent directory, name and writability
@@ -82,18 +58,12 @@ public abstract class DiskItem {
      * @param writable
      *        The writability of this item
      */
-    protected DiskItem(Directory parent, String name, boolean writable){
-
-        // initialize parrent variable
-
+    public DiskItem(Directory parent, String name, boolean writable){
+        this.move(parent);
         this.setName(name);
         this.setWritable(writable);
         this.creationTime = new Date();
         this.modificationTime = null;
-
-        if (parent != null){
-            parent.addItem(this);
-        }
     }
 
 // ===============================
@@ -149,8 +119,18 @@ public abstract class DiskItem {
      * @return true if and only if the item is not terminated
      */
     public boolean isTerminated(){
-        return isTerminated;
+        return terminated;
     }
+
+    /**
+     * Returns whether item is terminated
+     *
+     * @param terminated the new termination status of the item.
+     */
+    protected void setTerminated(boolean terminated) {
+        this.terminated = terminated;
+    }
+
 
 
 // =====================================================================

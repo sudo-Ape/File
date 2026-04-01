@@ -44,8 +44,8 @@ public class File extends DiskItem {
      *        The name of this new file
      */
     @Raw
-    public File(String name) {
-        this(name, 0, true, FileType.TXT);
+    public File(Directory parent, String name) {
+        this(parent, name, 0, true, FileType.TXT);
     }
 
 
@@ -76,35 +76,7 @@ public class File extends DiskItem {
      *        True if modifications are allowed, false if the file is read-only.
      */
     @Raw
-    public File(String name, int size, boolean writable, FileType type) {
-        super(name, writable);
-        this.type = type;               // set directly to avoid modificationTime side effect
-        this.setSize(size);
-    }
-
-
-    /**
-     * Initialize this new file with given parent directory, name, size, writability and type
-     *
-     * @effect The size is set to the given size
-     *      | setSize(size)
-     *
-     * @param parent
-     *        The parent directory of this file
-     *
-     * @param name
-     *        The name of this file
-     *
-     * @param size
-     *        The size of this file
-     *
-     * @param writable
-     *        The writability of this file
-     *
-     * @param type
-     *        The type of this file
-     */
-    public File(Directory parent, String name, int size, boolean writable, FileType type){
+    public File(Directory parent, String name, int size, boolean writable, FileType type) {
         super(parent, name, writable);
         this.type = type;
         this.setSize(size);
@@ -264,7 +236,9 @@ public class File extends DiskItem {
      * @return absolute path of this file
      */
     @Override
-    public String getAbsolutePath(){}
+    public String getAbsolutePath(){
+        return getParentDirectory().getAbsolutePath() + "/" + getName() + "." + getType().getExtension();
+    }
 
 
     /**
@@ -283,7 +257,9 @@ public class File extends DiskItem {
      * @return
      */
     @Override
-    public String getRoot(){}
+    public Directory getRoot(){
+        return getParentDirectory().getRoot();
+    }
 
     /**
      * Returns the type of this item
